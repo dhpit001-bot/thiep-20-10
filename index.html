@@ -806,9 +806,23 @@ try { $('#videoOpenLink').href = new URL(CONFIG.VIDEO_URL, location.href).href; 
 video.addEventListener('loadedmetadata', () => {
   if (video.videoWidth && video.videoHeight) video.parentElement.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
 });
-function showVideoError() { videoCover.hidden = true; videoError.hidden = false; }
+let blobTried = false;
+function showVideoError() {
+  // Dự phòng: tải trọn video rồi phát từ bộ nhớ (khi máy chủ không hỗ trợ tải theo đoạn)
+  if (!blobTried) {
+    blobTried = true;
+    videoCover.querySelector('span:last-child').textContent = 'Đang tải video…';
+    fetch(CONFIG.VIDEO_URL).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then((b) => { video.src = URL.createObjectURL(b); video.load(); videoCover.querySelector('span:last-child').textContent = 'Nhấn để xem video'; if (wantsPlay) videoCover.click(); })
+      .catch(() => { videoCover.hidden = true; videoError.hidden = false; });
+    return;
+  }
+  videoCover.hidden = true; videoError.hidden = false;
+}
+let wantsPlay = false;
 video.addEventListener('error', showVideoError);
 videoCover.addEventListener('click', () => {
+  wantsPlay = true;
   const p = video.play();
   if (p && p.catch) p.then(() => { videoCover.hidden = true; }).catch(() => { if (video.error) showVideoError(); else videoCover.hidden = true; });
   else videoCover.hidden = true;
