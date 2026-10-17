@@ -169,6 +169,7 @@
   .video-cover:hover .play-ring { transform: scale(1.06); }
   .play-ring svg { width: 26px; height: 26px; fill: var(--gold-light); margin-left: 4px; }
   .video-cover span { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; }
+    .video-error a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; display: inline-block; margin-top: 10px; }
   .video-error {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
     padding: 24px; background: var(--wine); color: var(--champagne); font-size: .95rem; line-height: 1.6;
@@ -319,7 +320,7 @@
       <h2>Gửi những người phụ nữ tuyệt vời!</h2>
       <div class="rule"></div>
       <p class="body">Nhân dịp Ngày Phụ nữ Việt Nam 20/10, xin gửi đến tất cả chị em những lời chúc tốt đẹp và chân thành nhất.</p>
-      <p class="sub">Hãy cùng mở từng trang của tấm thiệp này.</p>
+      <p class="sub">Trân trọng kính mời chị em tham dự chương trình ngày 19.10.2026.</p>
     </div>
   </section>
 
@@ -330,33 +331,19 @@
       <h2>Một lời chúc gửi riêng chị em</h2>
       <div class="video-frame">
         <div class="video-box">
-          <video id="cardVideo" playsinline preload="metadata" controls controlslist="nodownload" poster="video/poster.jpg">
-            <source id="cardVideoSrc" type="video/mp4">
-            Trình duyệt của bạn không hỗ trợ phát video.
-          </video>
+          <video id="cardVideo" playsinline webkit-playsinline preload="metadata" controls controlslist="nodownload" poster="video/poster.jpg"></video>
           <button class="video-cover" id="videoCover" type="button" aria-label="Phát video chúc mừng">
             <span class="play-ring"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
             <span>Nhấn để xem video</span>
           </button>
-          <div class="video-error" id="videoError" hidden>Video chưa tải được. Vui lòng kiểm tra kết nối mạng rồi mở lại thiệp, hoặc xem trên trình duyệt khác.</div>
+          <div class="video-error" id="videoError" hidden><div>Video chưa phát được trong khung này.<br><a id="videoOpenLink" href="#" target="_blank" rel="noopener">Mở video trong trình duyệt</a></div></div>
         </div>
       </div>
       <p class="video-note">Video có âm thanh, chỉ phát khi bạn nhấn.</p>
     </div>
   </section>
 
-  <!-- Màn 4: Thông điệp yêu thương -->
-  <section class="screen" id="s4" data-mode="light" aria-label="Thông điệp yêu thương">
-    <div class="inner reveal messages">
-      <p class="eyebrow">Thông điệp yêu thương</p>
-      <p class="quote-l">Chúc mỗi người luôn rạng rỡ theo cách riêng của mình, luôn mạnh mẽ khi cần, dịu dàng khi muốn và hạnh phúc trong từng khoảnh khắc của cuộc sống.</p>
-      <div class="rule"></div>
-      <p class="body">Cảm ơn những nụ cười, sự nhiệt huyết, tinh thần sẻ chia và những điều tốt đẹp mà chị em mang đến cho tập thể.</p>
-      <p class="body">Mong rằng mỗi ngày đều là một ngày đáng yêu, mỗi hành trình đều có niềm vui và mỗi người luôn cảm nhận được sự trân trọng, yêu thương xứng đáng.</p>
-    </div>
-  </section>
-
-  <!-- Màn 5: Khoảnh khắc đặc biệt -->
+  <!-- Màn 4: Khoảnh khắc đặc biệt -->
   <section class="screen" id="s5" data-mode="light" aria-label="Khoảnh khắc đặc biệt">
     <button class="tap-zone" id="bloomZone" type="button" aria-label="Chạm vào bó hoa để hoa nở"></button>
     <div class="inner reveal">
@@ -370,7 +357,7 @@
     </div>
   </section>
 
-  <!-- Màn 6: Kết thúc -->
+  <!-- Màn 5: Kết thúc -->
   <section class="screen" id="s6" data-mode="light" aria-label="Lời kết">
     <div class="inner reveal">
       <p class="eyebrow">Hẹn gặp chị em</p>
@@ -406,7 +393,7 @@ const CONFIG = {
   VIDEO_URL: 'video/thiep-2010.mp4',
   VIDEO_POSTER: 'video/poster.jpg',
   EVENT_DATE: '19.10.2026',
-  STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Thông điệp', 'Khoảnh khắc', 'Lời kết'],
+  STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
 };
 
 /* ============================================================
@@ -624,6 +611,7 @@ const Scene3D = (() => {
     const w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    if (bouquet) bouquet.scale.setScalar(camera.aspect < 0.8 ? 0.62 : camera.aspect < 1.1 ? 0.8 : 1);
   }
 
   let dummy = null;
@@ -685,8 +673,7 @@ const Scene3D = (() => {
       const views = {
         intro:   { cam: [0, 0.2, 7.2],  look: [0, 0.4, 0], light: 0,   bloom: 0 },
         greet:   { cam: [0.8, 0.6, 5.6], look: [0, 0.5, 0], light: 0,   bloom: 0.35 },
-        video:   { cam: [0, 0.8, 8.5],  look: [0, 0.4, 0], light: 0.1, bloom: 0.35 },
-        message: { cam: [-1.2, 0.2, 6.0], look: [0, 0.5, 0], light: 1,  bloom: 0.35 },
+        video:   { cam: [0, 2.2, 10.5], look: [0, 0.2, 0], light: 0.1, bloom: 0.35 },
         bouquet: { cam: [0, 1.2, 4.2],  look: [0, 0.75, 0], light: 1,  bloom: 0 },
         end:     { cam: [0, 0.6, 6.8],  look: [0, 0.5, 0], light: 1,   bloom: 1 },
       };
@@ -720,7 +707,7 @@ function enableCssPetals() {
    ============================================================ */
 const stage = $('#stage');
 const screens = Array.from(document.querySelectorAll('.screen'));
-const viewNames = ['intro', 'greet', 'video', 'message', 'bouquet', 'end'];
+const viewNames = ['intro', 'greet', 'video', 'bouquet', 'end'];
 const nav = $('#nav'), dots = $('#dots'), prevBtn = $('#prevBtn'), nextBtn = $('#nextBtn'), stepLabel = $('#stepLabel');
 let current = 0, opened = false, transitioning = false;
 
@@ -812,18 +799,19 @@ $('#bloomZone').addEventListener('click', () => {
 /* ============================================================
    Video
    ============================================================ */
-const video = $('#cardVideo'), videoSrc = $('#cardVideoSrc'), videoCover = $('#videoCover'), videoError = $('#videoError');
-videoSrc.src = CONFIG.VIDEO_URL;
+const video = $('#cardVideo'), videoCover = $('#videoCover'), videoError = $('#videoError');
+video.src = CONFIG.VIDEO_URL;
 if (CONFIG.VIDEO_POSTER) video.poster = CONFIG.VIDEO_POSTER;
-video.load();
+try { $('#videoOpenLink').href = new URL(CONFIG.VIDEO_URL, location.href).href; } catch (e) { $('#videoOpenLink').href = CONFIG.VIDEO_URL; }
 video.addEventListener('loadedmetadata', () => {
   if (video.videoWidth && video.videoHeight) video.parentElement.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
 });
 function showVideoError() { videoCover.hidden = true; videoError.hidden = false; }
 video.addEventListener('error', showVideoError);
-videoSrc.addEventListener('error', showVideoError);
 videoCover.addEventListener('click', () => {
-  video.play().then(() => { videoCover.hidden = true; }).catch(() => { videoCover.hidden = true; });
+  const p = video.play();
+  if (p && p.catch) p.then(() => { videoCover.hidden = true; }).catch(() => { if (video.error) showVideoError(); else videoCover.hidden = true; });
+  else videoCover.hidden = true;
 });
 video.addEventListener('play', () => { videoCover.hidden = true; });
 video.addEventListener('ended', () => { videoCover.hidden = false; });
