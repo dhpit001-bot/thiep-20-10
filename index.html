@@ -153,8 +153,8 @@
   .video-frame::before {
     content: ""; position: absolute; inset: 2px; border-radius: 19px; border: 1px solid rgba(255,250,243,.55); pointer-events: none; z-index: 2;
   }
-  .video-box { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 100%; border-radius: 17px; overflow: hidden; background: #000; }
-  .video-box video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+  .video-box { position: relative; width: 100%; max-width: 100%; height: 0; padding-bottom: 100%; border-radius: 17px; overflow: hidden; background: #000; }
+  .video-box video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
   .video-cover {
     position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     background: linear-gradient(180deg, rgba(42,13,22,.35), rgba(42,13,22,.75)); color: var(--pearl); border: 0; padding: 20px; width: 100%;
@@ -388,9 +388,11 @@
    CẤU HÌNH – chỉnh ở đây, không cần sửa phần còn lại
    ============================================================ */
 const CONFIG = {
-  // Đường dẫn video (tương đối với trang hoặc một địa chỉ HTTPS công khai).
-  // Tệp hiện tại được xuất bản cùng trang tại video/thiep-2010.mp4
-  VIDEO_URL: 'video/thiep-2010.mp4?v=2',
+  // Các bản video (tương đối với trang hoặc địa chỉ HTTPS công khai); giữ cả mp4 và webm để mọi trình xem đều phát được.
+  VIDEO_SOURCES: [
+    { src: 'video/thiep-2010.mp4?v=3',  type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' },  // iPhone, Safari, Chrome, Zalo di động
+    { src: 'video/thiep-2010.webm?v=3', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
+  ],
   VIDEO_POSTER: 'video/poster.jpg',
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
@@ -797,35 +799,47 @@ $('#bloomZone').addEventListener('click', () => {
 });
 
 /* ============================================================
-   Video
+   Video – nhiều định dạng, trình duyệt tự chọn bản phát được
    ============================================================ */
 const video = $('#cardVideo'), videoCover = $('#videoCover'), videoError = $('#videoError');
-video.src = CONFIG.VIDEO_URL;
+const coverLabel = videoCover.querySelector('span:last-child');
 if (CONFIG.VIDEO_POSTER) video.poster = CONFIG.VIDEO_POSTER;
-try { $('#videoOpenLink').href = new URL(CONFIG.VIDEO_URL, location.href).href; } catch (e) { $('#videoOpenLink').href = CONFIG.VIDEO_URL; }
-video.addEventListener('loadedmetadata', () => {
-  if (video.videoWidth && video.videoHeight) video.parentElement.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
-});
-let blobTried = false;
+try { $('#videoOpenLink').href = new URL(CONFIG.VIDEO_SOURCES[0].src, location.href).href; } catch (e) { $('#videoOpenLink').href = CONFIG.VIDEO_SOURCES[0].src; }
+
+function playableSources() {
+  return CONFIG.VIDEO_SOURCES.filter((s) => { try { return video.canPlayType(s.type) !== ''; } catch (e) { return true; } });
+}
+const queue = playableSources().length ? playableSources() : CONFIG.VIDEO_SOURCES.slice();
+let wantsPlay = false, blobTried = false;
+
+function loadNext() {
+  const next = queue.shift();
+  if (!next) { showVideoError(); return; }
+  video.src = next.src; video.load();
+}
 function showVideoError() {
-  // Dự phòng: tải trọn video rồi phát từ bộ nhớ (khi máy chủ không hỗ trợ tải theo đoạn)
+  // Máy chủ không hỗ trợ tải theo đoạn? Thử tải trọn bản mp4 rồi phát từ bộ nhớ.
   if (!blobTried) {
-    blobTried = true;
-    videoCover.querySelector('span:last-child').textContent = 'Đang tải video…';
-    fetch(CONFIG.VIDEO_URL).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
-      .then((b) => { video.src = URL.createObjectURL(b); video.load(); videoCover.querySelector('span:last-child').textContent = 'Nhấn để xem video'; if (wantsPlay) videoCover.click(); })
-      .catch(() => { videoCover.hidden = true; videoError.hidden = false; });
+    blobTried = true; coverLabel.textContent = 'Đang tải video…';
+    fetch(CONFIG.VIDEO_SOURCES[0].src).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then((b) => { video.src = URL.createObjectURL(b); video.load(); coverLabel.textContent = 'Nhấn để xem video'; if (wantsPlay) videoCover.click(); })
+      .catch(() => finalError('tải tệp thất bại'));
     return;
   }
+  finalError();
+}
+function finalError(extra) {
   videoCover.hidden = true; videoError.hidden = false;
   const code = video.error ? video.error.code : 0;
   const why = { 1: 'bị hủy', 2: 'lỗi mạng', 3: 'lỗi giải mã', 4: 'định dạng không hỗ trợ' }[code] || 'không rõ';
   const tag = videoError.querySelector('small') || videoError.firstElementChild.appendChild(document.createElement('small'));
   tag.style.cssText = 'display:block;opacity:.6;margin-top:8px;font-size:.75rem';
-  tag.textContent = 'Mã lỗi ' + code + ' (' + why + ')';
+  tag.textContent = 'Mã lỗi ' + code + ' (' + why + (extra ? ', ' + extra : '') + ')';
 }
-let wantsPlay = false;
-video.addEventListener('error', showVideoError);
+video.addEventListener('error', () => { if (queue.length) loadNext(); else showVideoError(); });
+video.addEventListener('loadedmetadata', () => {
+  if (video.videoWidth > 0 && video.videoHeight > 0) video.parentElement.style.paddingBottom = (video.videoHeight / video.videoWidth * 100) + '%';
+});
 videoCover.addEventListener('click', () => {
   wantsPlay = true;
   const p = video.play();
@@ -835,6 +849,7 @@ videoCover.addEventListener('click', () => {
 video.addEventListener('play', () => { videoCover.hidden = true; });
 video.addEventListener('ended', () => { videoCover.hidden = false; });
 function pauseVideo() { if (!video.paused) { video.pause(); } }
+loadNext();
 
 /* ============================================================
    Khởi động
