@@ -390,7 +390,7 @@
 const CONFIG = {
   // Đường dẫn video (tương đối với trang hoặc một địa chỉ HTTPS công khai).
   // Tệp hiện tại được xuất bản cùng trang tại video/thiep-2010.mp4
-  VIDEO_URL: 'video/thiep-2010.mp4',
+  VIDEO_URL: 'video/thiep-2010.mp4?v=2',
   VIDEO_POSTER: 'video/poster.jpg',
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
@@ -818,6 +818,11 @@ function showVideoError() {
     return;
   }
   videoCover.hidden = true; videoError.hidden = false;
+  const code = video.error ? video.error.code : 0;
+  const why = { 1: 'bị hủy', 2: 'lỗi mạng', 3: 'lỗi giải mã', 4: 'định dạng không hỗ trợ' }[code] || 'không rõ';
+  const tag = videoError.querySelector('small') || videoError.firstElementChild.appendChild(document.createElement('small'));
+  tag.style.cssText = 'display:block;opacity:.6;margin-top:8px;font-size:.75rem';
+  tag.textContent = 'Mã lỗi ' + code + ' (' + why + ')';
 }
 let wantsPlay = false;
 video.addEventListener('error', showVideoError);
