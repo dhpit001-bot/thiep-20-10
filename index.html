@@ -1,0 +1,848 @@
+<title>Thiệp 20/10 Diên Hồng</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Thương gửi những đóa hoa xinh đẹp – Thiệp chúc mừng Ngày Phụ nữ Việt Nam 20/10, chương trình ngày 19.10.2026.">
+<meta property="og:title" content="Thương gửi những đóa hoa xinh đẹp – 20/10">
+<meta property="og:description" content="Thiệp chúc mừng Ngày Phụ nữ Việt Nam 20/10 dành tặng toàn thể chị em. Chương trình ngày 19.10.2026.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:url" content="">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2a0d16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500&display=swap">
+<style>
+  /* Layout: one fixed stage. A WebGL scene sits behind six stacked screens that cross-fade;
+     the world shifts from a dark wine opening to a warm cream close as the screens advance. */
+  :root {
+    --wine: #2a0d16;
+    --wine-deep: #180710;
+    --rose: #c5536e;
+    --rose-soft: #f2b9c3;
+    --champagne: #f4d7cf;
+    --cream: #fbf4ec;
+    --pearl: #fffaf3;
+    --gold: #c9a24a;
+    --gold-light: #e8cf86;
+    --ink: #3a1c26;
+    --ink-soft: #7a5560;
+
+    --font-display: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+    --font-body: "Be Vietnam Pro", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+    color-scheme: dark;
+  }
+
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--wine-deep);
+    color: var(--pearl);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  * { box-sizing: border-box; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+
+  #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+  /* Background layers */
+  #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 50% 40%, rgba(201,162,74,.14), transparent 70%),
+      radial-gradient(40% 40% at 20% 90%, rgba(197,83,110,.18), transparent 70%);
+    transition: opacity 1.4s ease;
+  }
+  #wash {
+    position: absolute; inset: 0; pointer-events: none;
+    background: var(--cream);
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+  #stage.is-light #wash { opacity: .92; }
+  #stage.is-light #glow { opacity: .35; }
+
+  /* Screens */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding-block: calc(56px + env(safe-area-inset-top, 0px)) calc(84px + env(safe-area-inset-bottom, 0px));
+    padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+    opacity: 0; visibility: hidden; transform: translateY(18px);
+    transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1), visibility 0s linear .9s;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .screen.is-active {
+    opacity: 1; visibility: visible; transform: none;
+    transition: opacity .9s ease .25s, transform .9s cubic-bezier(.2,.7,.2,1) .25s, visibility 0s;
+  }
+  .screen > .inner { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+  /* Staggered reveal of children */
+  .reveal > * { opacity: 0; transform: translateY(14px); filter: blur(4px); transition: opacity .9s ease, transform .9s ease, filter .9s ease; }
+  .is-active .reveal > * { opacity: 1; transform: none; filter: none; }
+  .is-active .reveal > :nth-child(1) { transition-delay: .4s; }
+  .is-active .reveal > :nth-child(2) { transition-delay: .7s; }
+  .is-active .reveal > :nth-child(3) { transition-delay: 1s; }
+  .is-active .reveal > :nth-child(4) { transition-delay: 1.3s; }
+  .is-active .reveal > :nth-child(5) { transition-delay: 1.6s; }
+  .is-active .reveal > :nth-child(6) { transition-delay: 1.9s; }
+  .is-active .reveal > :nth-child(7) { transition-delay: 2.2s; }
+
+  /* Type */
+  .eyebrow {
+    font-family: var(--font-body); font-weight: 400; font-size: .72rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--gold-light); margin: 0;
+  }
+  .is-light .eyebrow { color: var(--gold); }
+  h1, h2 { font-family: var(--font-display); font-weight: 500; margin: 0; text-wrap: balance; line-height: 1.12; }
+  h1 { font-size: clamp(1.9rem, 7.2vw, 3.3rem); letter-spacing: .02em; text-transform: uppercase; }
+  h2 { font-size: clamp(1.6rem, 6vw, 2.6rem); }
+  .is-light h1, .is-light h2 { color: var(--ink); }
+  .sub { font-family: var(--font-display); font-style: italic; font-size: clamp(1.1rem, 4.2vw, 1.5rem); color: var(--champagne); margin: 0; }
+  .is-light .sub { color: var(--ink-soft); }
+  .date {
+    font-family: var(--font-display); font-size: 1.25rem; letter-spacing: .3em; color: var(--gold-light); margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .is-light .date { color: var(--gold); }
+  .rule { width: 72px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  p.body { margin: 0; font-size: clamp(1rem, 3.9vw, 1.12rem); line-height: 1.7; max-width: 34em; color: var(--pearl); }
+  .is-light p.body { color: var(--ink); }
+  p.body strong { font-weight: 500; }
+  .quote-l { font-family: var(--font-display); font-size: clamp(1.25rem, 4.8vw, 1.7rem); line-height: 1.45; font-style: italic; margin: 0; max-width: 24em; }
+  .is-light .quote-l { color: var(--ink); }
+
+  /* Primary button */
+  .btn {
+    position: relative; display: inline-flex; align-items: center; gap: 12px;
+    padding: 15px 30px; border-radius: 999px; border: 1px solid rgba(232,207,134,.55);
+    background: linear-gradient(135deg, rgba(201,162,74,.22), rgba(201,162,74,.06));
+    color: var(--gold-light); letter-spacing: .22em; text-transform: uppercase; font-size: .78rem; font-weight: 500;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+    box-shadow: 0 0 0 0 rgba(232,207,134,.0), 0 10px 30px rgba(0,0,0,.25);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(232,207,134,.28), 0 14px 34px rgba(0,0,0,.3); }
+  .btn:active { transform: translateY(0); }
+  .btn .heart { width: 14px; height: 14px; fill: currentColor; }
+  .is-light .btn { color: var(--wine); border-color: rgba(201,162,74,.8); background: linear-gradient(135deg, rgba(201,162,74,.35), rgba(232,207,134,.25)); box-shadow: 0 10px 28px rgba(58,28,38,.12); }
+  .btn.ghost { background: transparent; }
+
+  /* Screen 1 */
+  #s1 .inner { gap: 22px; }
+  #s1 .date { margin-top: 6px; }
+
+  /* Screen 2 bloom text */
+  .petal-mark { width: 56px; height: 56px; }
+
+  /* Video */
+  .video-frame {
+    position: relative; width: min(100%, 440px); border-radius: 22px; padding: 6px;
+    background: linear-gradient(140deg, var(--gold-light), #9c7a2a 40%, var(--gold-light) 70%, #8e6d20);
+    box-shadow: 0 28px 60px rgba(0,0,0,.35);
+  }
+  .is-light .video-frame { box-shadow: 0 24px 50px rgba(58,28,38,.22); }
+  .video-frame::before {
+    content: ""; position: absolute; inset: 2px; border-radius: 19px; border: 1px solid rgba(255,250,243,.55); pointer-events: none; z-index: 2;
+  }
+  .video-box { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 100%; border-radius: 17px; overflow: hidden; background: #000; }
+  .video-box video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+  .video-cover {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: linear-gradient(180deg, rgba(42,13,22,.35), rgba(42,13,22,.75)); color: var(--pearl); border: 0; padding: 20px; width: 100%;
+    transition: opacity .5s ease;
+  }
+  .video-cover[hidden] { display: none; }
+  .play-ring {
+    width: 74px; height: 74px; border-radius: 50%; border: 1px solid rgba(232,207,134,.8);
+    background: rgba(42,13,22,.45); display: grid; place-items: center; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 0 40px rgba(232,207,134,.25); transition: transform .3s ease;
+  }
+  .video-cover:hover .play-ring { transform: scale(1.06); }
+  .play-ring svg { width: 26px; height: 26px; fill: var(--gold-light); margin-left: 4px; }
+  .video-cover span { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; }
+  .video-error {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 24px; background: var(--wine); color: var(--champagne); font-size: .95rem; line-height: 1.6;
+  }
+  .video-note { font-size: .82rem; color: var(--champagne); margin: 0; opacity: .85; }
+  .is-light .video-note { color: var(--ink-soft); }
+
+  /* Screen 4 messages */
+  .messages { display: flex; flex-direction: column; gap: 22px; align-items: center; }
+  .messages .body { padding-inline: 4px; }
+
+  /* Screen 5 bouquet */
+  #s5 .inner { gap: 14px; }
+  .bouquet-hint {
+    display: inline-flex; align-items: center; gap: 10px; font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-light);
+    background: rgba(24,7,16,.35); border: 1px solid rgba(232,207,134,.35); border-radius: 999px; padding: 10px 18px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .is-light .bouquet-hint { color: var(--wine); background: rgba(251,244,236,.6); border-color: rgba(201,162,74,.6); }
+  .bouquet-hint .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 12px var(--gold-light); animation: pulse 1.8s ease-in-out infinite; }
+  .is-light .bouquet-hint .dot { background: var(--gold); }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1 } 50% { transform: scale(1.5); opacity: .5 } }
+  #s5.is-bloomed .bouquet-hint { opacity: 0; transform: translateY(8px); pointer-events: none; }
+  .bloom-message { opacity: 0; transform: translateY(16px); filter: blur(6px); transition: opacity 1.2s ease .3s, transform 1.2s ease .3s, filter 1.2s ease .3s; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+  #s5.is-bloomed .bloom-message { opacity: 1; transform: none; filter: none; }
+  #s5 .spacer { height: min(34vh, 300px); }
+  #s5 .inner { justify-content: flex-end; }
+  .tap-zone { position: absolute; inset: 0; z-index: 1; background: transparent; border: 0; padding: 0; cursor: pointer; }
+  .tap-zone:focus-visible { outline: 2px dashed var(--gold-light); outline-offset: -12px; }
+  #s5 .inner { position: relative; z-index: 2; pointer-events: none; }
+  #s5 .inner > * { pointer-events: auto; }
+  #s5 .bouquet-hint, #s5 .spacer { pointer-events: none; }
+
+  /* Screen 6 */
+  .signature { font-family: var(--font-display); font-style: italic; font-size: clamp(1.3rem, 5vw, 1.8rem); color: var(--rose); margin: 0; }
+  .org { font-size: .78rem; letter-spacing: .26em; text-transform: uppercase; color: var(--ink-soft); margin: 0; }
+  .end-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+  /* Navigation */
+  #nav {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+    padding-block: 14px calc(14px + env(safe-area-inset-bottom, 0px));
+    opacity: 0; visibility: hidden; transition: opacity .8s ease, visibility 0s linear .8s;
+  }
+  #nav.is-visible { opacity: 1; visibility: visible; transition: opacity .8s ease .6s, visibility 0s; }
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dots button { width: 22px; height: 22px; border: 0; background: transparent; padding: 0; display: grid; place-items: center; }
+  .dots button i { display: block; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,250,243,.35); transition: all .35s ease; }
+  .dots button[aria-current="step"] i { width: 20px; border-radius: 3px; background: var(--gold-light); box-shadow: 0 0 10px rgba(232,207,134,.5); }
+  .is-light .dots button i { background: rgba(58,28,38,.25); }
+  .is-light .dots button[aria-current="step"] i { background: var(--gold); box-shadow: none; }
+  .navbtn {
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(232,207,134,.4); background: rgba(24,7,16,.35);
+    color: var(--gold-light); display: grid; place-items: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  .navbtn:hover { transform: scale(1.06); }
+  .navbtn[disabled] { opacity: .25; pointer-events: none; }
+  .navbtn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .is-light .navbtn { color: var(--wine); background: rgba(251,244,236,.6); border-color: rgba(201,162,74,.6); }
+  .step-label { font-family: var(--font-display); font-style: italic; font-size: .95rem; color: var(--champagne); opacity: .9; }
+  .is-light .step-label { color: var(--ink-soft); }
+
+  /* Top-left sound toggle */
+  #soundBtn {
+    position: absolute; z-index: 20; top: calc(14px + env(safe-area-inset-top, 0px)); right: var(--gutter-r);
+    width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(232,207,134,.35); background: rgba(24,7,16,.35);
+    color: var(--gold-light); display: grid; place-items: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; transition: opacity .6s ease;
+  }
+  #soundBtn.is-visible { opacity: 1; visibility: visible; }
+  #soundBtn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  #soundBtn[aria-pressed="false"] .on { display: none; }
+  #soundBtn[aria-pressed="true"] .off { display: none; }
+  .is-light #soundBtn { color: var(--wine); background: rgba(251,244,236,.6); border-color: rgba(201,162,74,.6); }
+
+  /* CSS fallback petals when WebGL is unavailable */
+  #cssPetals { position: absolute; inset: 0; pointer-events: none; overflow: hidden; display: none; }
+  #cssPetals.is-on { display: block; }
+  #cssPetals span {
+    position: absolute; top: -8%; width: 14px; height: 20px; border-radius: 100% 0 100% 0;
+    background: linear-gradient(135deg, var(--rose-soft), var(--rose)); opacity: .8;
+    animation: fall linear infinite;
+  }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0deg) } 100% { transform: translateY(115vh) rotate(540deg) } }
+
+  /* Loading veil */
+  #veil { position: absolute; inset: 0; z-index: 30; pointer-events: none; background: var(--wine-deep); display: grid; place-items: center; transition: opacity 1.2s ease, visibility 0s linear 1.2s; }
+  #veil.is-gone { opacity: 0; visibility: hidden; }
+  #veil .mono { font-family: var(--font-display); font-style: italic; color: var(--gold-light); letter-spacing: .1em; font-size: 1.1rem; opacity: .85; }
+
+  @media (min-width: 720px) {
+    .screen { padding-block: calc(80px + env(safe-area-inset-top, 0px)) calc(100px + env(safe-area-inset-bottom, 0px)); }
+    .screen > .inner { max-width: 640px; gap: 22px; }
+    #s5 .spacer { height: min(38vh, 340px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .screen, .screen.is-active { transition-duration: .3s; transition-delay: 0s; transform: none; }
+    .reveal > * { transition-duration: .3s !important; transition-delay: 0s !important; filter: none; transform: none; }
+    .bouquet-hint .dot { animation: none; }
+    #cssPetals span { animation: none; display: none; }
+    #glow, #wash { transition-duration: .4s; }
+  }
+</style>
+
+<div id="stage">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div id="cssPetals" aria-hidden="true"></div>
+  <div id="glow" aria-hidden="true"></div>
+  <div id="wash" aria-hidden="true"></div>
+
+  <div id="veil" aria-hidden="true"><div class="mono">Đang mở thiệp…</div></div>
+
+  <button id="soundBtn" type="button" aria-pressed="false" aria-label="Bật hoặc tắt âm thanh hiệu ứng" title="Âm thanh hiệu ứng">
+    <svg class="off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M19 5 5 19"/></svg>
+    <svg class="on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>
+  </button>
+
+  <!-- Màn 1: Mở thiệp -->
+  <section class="screen is-active" id="s1" data-mode="dark" aria-label="Mở thiệp">
+    <div class="inner reveal">
+      <p class="eyebrow">Diên Hồng · Ngày Phụ nữ Việt Nam</p>
+      <h1>Thương gửi những đóa hoa xinh đẹp</h1>
+      <div class="rule"></div>
+      <p class="sub">Chào mừng Ngày Phụ nữ Việt Nam 20/10</p>
+      <p class="date">19.10.2026</p>
+      <button class="btn" type="button" id="openBtn">
+        <svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C1 8.2 3.3 5 6.6 5c1.9 0 3.4 1 4.4 2.5C12 6 13.5 5 15.4 5c3.3 0 5.6 3.2 4.2 6.7C19.5 16.4 12 21 12 21z"/></svg>
+        Mở thiệp yêu thương
+      </button>
+    </div>
+  </section>
+
+  <!-- Màn 2: Lời chào -->
+  <section class="screen" id="s2" data-mode="dark" aria-label="Lời chào">
+    <div class="inner reveal">
+      <svg class="petal-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <g fill="none" stroke="#e8cf86" stroke-width="1.2">
+          <path d="M32 8c6 8 10 16 10 24a10 10 0 0 1-20 0c0-8 4-16 10-24z"/>
+          <path d="M32 56c-10-6-18-14-18-24"/><path d="M32 56c10-6 18-14 18-24"/>
+          <path d="M32 32v24"/>
+        </g>
+      </svg>
+      <p class="eyebrow">Hai mươi tháng Mười</p>
+      <h2>Gửi những người phụ nữ tuyệt vời!</h2>
+      <div class="rule"></div>
+      <p class="body">Nhân dịp Ngày Phụ nữ Việt Nam 20/10, xin gửi đến tất cả chị em những lời chúc tốt đẹp và chân thành nhất.</p>
+      <p class="sub">Hãy cùng mở từng trang của tấm thiệp này.</p>
+    </div>
+  </section>
+
+  <!-- Màn 3: Video kỷ niệm -->
+  <section class="screen" id="s3" data-mode="dark" aria-label="Video kỷ niệm">
+    <div class="inner reveal">
+      <p class="eyebrow">Video kỷ niệm</p>
+      <h2>Một lời chúc gửi riêng chị em</h2>
+      <div class="video-frame">
+        <div class="video-box">
+          <video id="cardVideo" playsinline preload="metadata" controls controlslist="nodownload" poster="video/poster.jpg">
+            <source id="cardVideoSrc" type="video/mp4">
+            Trình duyệt của bạn không hỗ trợ phát video.
+          </video>
+          <button class="video-cover" id="videoCover" type="button" aria-label="Phát video chúc mừng">
+            <span class="play-ring"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+            <span>Nhấn để xem video</span>
+          </button>
+          <div class="video-error" id="videoError" hidden>Video chưa tải được. Vui lòng kiểm tra kết nối mạng rồi mở lại thiệp, hoặc xem trên trình duyệt khác.</div>
+        </div>
+      </div>
+      <p class="video-note">Video có âm thanh, chỉ phát khi bạn nhấn.</p>
+    </div>
+  </section>
+
+  <!-- Màn 4: Thông điệp yêu thương -->
+  <section class="screen" id="s4" data-mode="light" aria-label="Thông điệp yêu thương">
+    <div class="inner reveal messages">
+      <p class="eyebrow">Thông điệp yêu thương</p>
+      <p class="quote-l">Chúc mỗi người luôn rạng rỡ theo cách riêng của mình, luôn mạnh mẽ khi cần, dịu dàng khi muốn và hạnh phúc trong từng khoảnh khắc của cuộc sống.</p>
+      <div class="rule"></div>
+      <p class="body">Cảm ơn những nụ cười, sự nhiệt huyết, tinh thần sẻ chia và những điều tốt đẹp mà chị em mang đến cho tập thể.</p>
+      <p class="body">Mong rằng mỗi ngày đều là một ngày đáng yêu, mỗi hành trình đều có niềm vui và mỗi người luôn cảm nhận được sự trân trọng, yêu thương xứng đáng.</p>
+    </div>
+  </section>
+
+  <!-- Màn 5: Khoảnh khắc đặc biệt -->
+  <section class="screen" id="s5" data-mode="light" aria-label="Khoảnh khắc đặc biệt">
+    <button class="tap-zone" id="bloomZone" type="button" aria-label="Chạm vào bó hoa để hoa nở"></button>
+    <div class="inner reveal">
+      <div class="spacer" aria-hidden="true"></div>
+      <span class="bouquet-hint"><span class="dot"></span>Chạm vào bó hoa</span>
+      <div class="bloom-message">
+        <p class="eyebrow">Khoảnh khắc đặc biệt</p>
+        <h2>Mỗi người là một đóa hoa, theo cách riêng của mình.</h2>
+        <p class="body">Xin được trân trọng cảm ơn và gửi tới chị em một bó hoa nhỏ, thay cho lời cảm ơn lớn của cả tập thể.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Màn 6: Kết thúc -->
+  <section class="screen" id="s6" data-mode="light" aria-label="Lời kết">
+    <div class="inner reveal">
+      <p class="eyebrow">Hẹn gặp chị em</p>
+      <h2>Chúc chị em một ngày 20/10 thật nhiều niềm vui</h2>
+      <p class="body">Ngập tràn tiếng cười và lưu giữ những kỷ niệm thật đẹp trong chương trình ngày <strong>19/10/2026</strong>.</p>
+      <div class="rule"></div>
+      <p class="signature">Trân trọng và thương chúc!</p>
+      <p class="org">Diên Hồng</p>
+      <div class="end-actions">
+        <button class="btn ghost" type="button" id="replayBtn">Xem lại thiệp</button>
+      </div>
+    </div>
+  </section>
+
+  <nav id="nav" aria-label="Điều hướng thiệp">
+    <button class="navbtn" id="prevBtn" type="button" aria-label="Trang trước"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div class="dots" id="dots" role="tablist" aria-label="Các trang"></div>
+      <span class="step-label" id="stepLabel"></span>
+    </div>
+    <button class="navbtn" id="nextBtn" type="button" aria-label="Trang tiếp"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============================================================
+   CẤU HÌNH – chỉnh ở đây, không cần sửa phần còn lại
+   ============================================================ */
+const CONFIG = {
+  // Đường dẫn video (tương đối với trang hoặc một địa chỉ HTTPS công khai).
+  // Tệp hiện tại được xuất bản cùng trang tại video/thiep-2010.mp4
+  VIDEO_URL: 'video/thiep-2010.mp4',
+  VIDEO_POSTER: 'video/poster.jpg',
+  EVENT_DATE: '19.10.2026',
+  STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Thông điệp', 'Khoảnh khắc', 'Lời kết'],
+};
+
+/* ============================================================
+   Tiện ích chung
+   ============================================================ */
+const $ = (sel) => document.querySelector(sel);
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isSmallScreen = Math.min(window.innerWidth, window.innerHeight) < 500;
+const isLowPower = (navigator.hardwareConcurrency || 4) <= 4 || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+const QUALITY = reducedMotion ? 'low' : (isSmallScreen || isLowPower) ? 'medium' : 'high';
+
+/* ============================================================
+   Âm thanh hiệu ứng (WebAudio, chỉ khi người dùng bật)
+   ============================================================ */
+const Sound = {
+  ctx: null, enabled: false,
+  init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) this.ctx = new AC(); } if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  chime(notes = [523.25, 659.25, 783.99, 1046.5], spread = 0.14) {
+    if (!this.enabled || !this.ctx) return;
+    const t0 = this.ctx.currentTime;
+    notes.forEach((f, i) => {
+      const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t0 + i * spread);
+      g.gain.linearRampToValueAtTime(0.08, t0 + i * spread + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + i * spread + 1.6);
+      o.connect(g).connect(this.ctx.destination);
+      o.start(t0 + i * spread); o.stop(t0 + i * spread + 1.7);
+    });
+  }
+};
+const soundBtn = $('#soundBtn');
+soundBtn.addEventListener('click', () => {
+  Sound.init();
+  Sound.enabled = !Sound.enabled;
+  soundBtn.setAttribute('aria-pressed', String(Sound.enabled));
+  if (Sound.enabled) Sound.chime([783.99, 1046.5], 0.12);
+});
+
+/* ============================================================
+   Cảnh 3D – Three.js (bó hoa hồng, cánh hoa rơi, hạt sáng)
+   ============================================================ */
+const Scene3D = (() => {
+  const canvas = $('#scene');
+  let renderer, scene, camera, clock;
+  let bouquet = null, petalRain = null, sparkles = null;
+  const petals = []; // {pivot, closedRot, openRot}
+  const state = { bloom: 0, bloomTarget: 0, camTarget: null, lookTarget: null, parallax: { x: 0, y: 0 }, light: 0, lightTarget: 0 };
+  let ok = false;
+  const hasThree = typeof THREE !== 'undefined';
+
+  function supportsWebGL() {
+    try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e) { return false; }
+  }
+
+  function makePetalGeometry() {
+    const g = new THREE.PlaneGeometry(1, 1.3, 6, 8);
+    const pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), y = pos.getY(i);
+      const yy = (y + 0.65) / 1.3;             // 0 (base) → 1 (tip)
+      const curl = Math.pow(yy, 1.6) * 0.75;   // bends outward at the tip
+      const cup = (1 - Math.pow(x * 2, 2)) * 0.22 * yy; // cupped cross-section
+      pos.setZ(i, curl + cup);
+      pos.setX(i, x * (0.35 + 0.95 * Math.sin(yy * Math.PI * 0.95))); // teardrop outline
+    }
+    g.computeVertexNormals();
+    return g;
+  }
+
+  function makeRose(colorA, colorB, scale) {
+    const rose = new THREE.Group();
+    const geo = makePetalGeometry();
+    const layers = QUALITY === 'high' ? 5 : 4;
+    const petalsPerLayer = QUALITY === 'high' ? 6 : 5;
+    for (let L = 0; L < layers; L++) {
+      const t = L / (layers - 1);
+      const mat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().lerpColors(colorA, colorB, t), side: THREE.DoubleSide, roughness: 0.55, metalness: 0.05, emissive: colorA.clone().multiplyScalar(0.08),
+      });
+      const radius = 0.08 + t * 0.42;
+      const s = 0.45 + t * 0.7;
+      for (let i = 0; i < petalsPerLayer; i++) {
+        const a = (i / petalsPerLayer) * Math.PI * 2 + L * 0.55;
+        const pivot = new THREE.Group();
+        pivot.position.set(Math.cos(a) * radius, t * 0.18, Math.sin(a) * radius);
+        pivot.rotation.y = -a + Math.PI / 2;
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.scale.setScalar(s);
+        mesh.position.y = 0.6 * s;
+        pivot.add(mesh);
+        const closedRot = -0.1 - (1 - t) * 0.25;
+        const openRot = 0.25 + t * 1.15;
+        pivot.rotation.x = closedRot;
+        petals.push({ pivot, closedRot, openRot, phase: Math.random() * Math.PI * 2 });
+        rose.add(pivot);
+      }
+    }
+    // Center bud
+    const bud = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 12), new THREE.MeshStandardMaterial({ color: colorA.clone().multiplyScalar(0.7), roughness: 0.7 }));
+    bud.position.y = 0.2; rose.add(bud);
+    // Sepals + stem
+    const stemMat = new THREE.MeshStandardMaterial({ color: 0x4e7a45, roughness: 0.8 });
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 2.2, 8), stemMat);
+    stem.position.y = -1.1; rose.add(stem);
+    const leafGeo = new THREE.PlaneGeometry(0.28, 0.6, 3, 5);
+    const leafMat = new THREE.MeshStandardMaterial({ color: 0x5c8a4f, side: THREE.DoubleSide, roughness: 0.75 });
+    for (let i = 0; i < 2; i++) {
+      const leaf = new THREE.Mesh(leafGeo, leafMat);
+      leaf.position.set(i ? 0.22 : -0.22, -0.9 - i * 0.35, 0);
+      leaf.rotation.set(0.4, 0, i ? -0.7 : 0.7);
+      rose.add(leaf);
+    }
+    rose.scale.setScalar(scale);
+    return rose;
+  }
+
+  function makeBouquet() {
+    const group = new THREE.Group();
+    const wine = new THREE.Color(0x8e1f3a), rosePink = new THREE.Color(0xd96b84), champagne = new THREE.Color(0xf2c9c0), blush = new THREE.Color(0xf0a6b6);
+    const spec = [
+      { c: [wine, rosePink], p: [0, 0.1, 0.2], s: 1.0 },
+      { c: [rosePink, blush], p: [-0.95, -0.25, -0.35], s: 0.85 },
+      { c: [champagne, blush], p: [0.95, -0.2, -0.3], s: 0.85 },
+      { c: [wine, rosePink], p: [-0.5, -0.65, 0.55], s: 0.75 },
+      { c: [blush, champagne], p: [0.55, -0.7, 0.6], s: 0.75 },
+    ];
+    const count = QUALITY === 'low' ? 3 : spec.length;
+    for (let i = 0; i < count; i++) {
+      const r = makeRose(spec[i].c[0], spec[i].c[1], spec[i].s);
+      r.position.set(...spec[i].p);
+      r.rotation.set((Math.random() - 0.5) * 0.3, Math.random() * 6, (spec[i].p[0]) * 0.35);
+      group.add(r);
+    }
+    // Gold ribbon ring
+    const ribbon = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.045, 10, 48), new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.9, roughness: 0.25, emissive: 0x3a2a08 }));
+    ribbon.position.y = -1.35; ribbon.rotation.x = Math.PI / 2; ribbon.scale.set(1, 1, 0.5);
+    group.add(ribbon);
+    // Tissue wrap (cone)
+    const wrap = new THREE.Mesh(new THREE.ConeGeometry(1.45, 2.6, 24, 1, true), new THREE.MeshStandardMaterial({ color: 0xf6e4dc, side: THREE.DoubleSide, roughness: 0.9, transparent: true, opacity: 0.55 }));
+    wrap.position.y = -1.25; wrap.rotation.x = Math.PI; group.add(wrap);
+    return group;
+  }
+
+  function makePetalRain() {
+    const n = QUALITY === 'high' ? 90 : QUALITY === 'medium' ? 50 : 20;
+    const geo = makePetalGeometry();
+    const mat = new THREE.MeshStandardMaterial({ color: 0xe88aa0, side: THREE.DoubleSide, roughness: 0.6, transparent: true, opacity: 0.9 });
+    const inst = new THREE.InstancedMesh(geo, mat, n);
+    inst.userData.items = [];
+    for (let i = 0; i < n; i++) {
+      inst.userData.items.push({
+        x: (Math.random() - 0.5) * 14, y: Math.random() * 12 - 4, z: (Math.random() - 0.5) * 8 - 1,
+        rx: Math.random() * 6, ry: Math.random() * 6, rz: Math.random() * 6,
+        vy: 0.25 + Math.random() * 0.4, sway: Math.random() * 6, scale: 0.12 + Math.random() * 0.14,
+      });
+    }
+    return inst;
+  }
+
+  function makeSparkles() {
+    const n = QUALITY === 'high' ? 420 : QUALITY === 'medium' ? 220 : 80;
+    const pos = new Float32Array(n * 3), ph = new Float32Array(n);
+    for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - 0.5) * 18; pos[i * 3 + 1] = (Math.random() - 0.5) * 12; pos[i * 3 + 2] = (Math.random() - 0.5) * 10 - 2; ph[i] = Math.random() * 6; }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('phase', new THREE.BufferAttribute(ph, 1));
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { uTime: { value: 0 }, uColor: { value: new THREE.Color(0xe8cf86) }, uPixel: { value: Math.min(window.devicePixelRatio, 2) } },
+      vertexShader: `attribute float phase; uniform float uTime; uniform float uPixel; varying float vA;
+        void main(){ vec3 p = position; p.y += sin(uTime*0.4 + phase)*0.3; p.x += cos(uTime*0.3 + phase*1.3)*0.2;
+        vec4 mv = modelViewMatrix * vec4(p,1.0); gl_Position = projectionMatrix * mv;
+        float tw = 0.5 + 0.5*sin(uTime*1.5 + phase*4.0); vA = tw; gl_PointSize = (2.0 + 3.0*tw) * uPixel * (6.0 / max(-mv.z, 1.0)); }`,
+      fragmentShader: `uniform vec3 uColor; varying float vA;
+        void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d); gl_FragColor = vec4(uColor, a * (0.25 + 0.6*vA)); }`,
+    });
+    return new THREE.Points(geo, mat);
+  }
+
+  function init() {
+    if (!hasThree || !supportsWebGL()) return false;
+    state.camTarget = new THREE.Vector3(0, 0.2, 6.5); state.lookTarget = new THREE.Vector3(0, 0.4, 0);
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: QUALITY === 'high', alpha: true, powerPreference: 'high-performance' });
+    } catch (e) { return false; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, QUALITY === 'high' ? 2 : 1.5));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x2a0d16, 0.045);
+    camera = new THREE.PerspectiveCamera(42, 1, 0.1, 60);
+    camera.position.copy(state.camTarget);
+    clock = new THREE.Clock();
+
+    scene.add(new THREE.HemisphereLight(0xfff1e0, 0x3a0f1c, 0.55));
+    const key = new THREE.DirectionalLight(0xfff0d6, 1.25); key.position.set(3, 5, 4); scene.add(key);
+    const rim = new THREE.PointLight(0xe8cf86, 1.2, 14); rim.position.set(-3, 2, -2); scene.add(rim);
+    const fill = new THREE.PointLight(0xd96b84, 0.8, 12); fill.position.set(2, -2, 3); scene.add(fill);
+    scene.userData.lights = { key, rim, fill };
+
+    bouquet = makeBouquet(); bouquet.position.set(0, 0.5, 0); scene.add(bouquet);
+    petalRain = makePetalRain(); scene.add(petalRain);
+    sparkles = makeSparkles(); scene.add(sparkles);
+
+    resize();
+    window.addEventListener('resize', resize);
+    ok = true;
+    renderer.setAnimationLoop(tick);
+    return true;
+  }
+
+  function resize() {
+    const w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+
+  let dummy = null;
+  let last = 0;
+  function tick() {
+    if (!dummy) dummy = new THREE.Object3D();
+    const t = clock.getElapsedTime();
+    const dt = Math.min(t - last, 0.05); last = t;
+
+    // bloom easing
+    state.bloom += (state.bloomTarget - state.bloom) * (reducedMotion ? 0.3 : 0.035);
+    const b = state.bloom;
+    for (const p of petals) {
+      const open = p.closedRot + (p.openRot - p.closedRot) * b;
+      p.pivot.rotation.x = open + Math.sin(t * 0.8 + p.phase) * 0.02 * b;
+    }
+    bouquet.rotation.y += dt * 0.12;
+    bouquet.position.y = 0.5 + Math.sin(t * 0.6) * 0.06;
+
+    // light shift dark → warm
+    state.light += (state.lightTarget - state.light) * 0.03;
+    const L = scene.userData.lights;
+    L.key.intensity = 1.25 + state.light * 0.9;
+    L.rim.intensity = 1.2 - state.light * 0.6;
+    scene.fog.color.lerpColors(new THREE.Color(0x2a0d16), new THREE.Color(0xfbf4ec), state.light);
+    scene.fog.density = 0.045 - state.light * 0.02;
+
+    // petal rain
+    const items = petalRain.userData.items;
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      it.y -= it.vy * dt; it.rx += dt * 0.9; it.rz += dt * 0.6;
+      if (it.y < -6) { it.y = 7; it.x = (Math.random() - 0.5) * 14; }
+      dummy.position.set(it.x + Math.sin(t * 0.7 + it.sway) * 0.4, it.y, it.z);
+      dummy.rotation.set(it.rx, it.ry, it.rz);
+      dummy.scale.setScalar(it.scale);
+      dummy.updateMatrix();
+      petalRain.setMatrixAt(i, dummy.matrix);
+    }
+    petalRain.instanceMatrix.needsUpdate = true;
+    sparkles.material.uniforms.uTime.value = t;
+
+    // camera: target + parallax
+    const px = state.parallax.x * 0.6, py = state.parallax.y * 0.35;
+    camera.position.x += (state.camTarget.x + px - camera.position.x) * 0.04;
+    camera.position.y += (state.camTarget.y + py - camera.position.y) * 0.04;
+    camera.position.z += (state.camTarget.z - camera.position.z) * 0.04;
+    camera.lookAt(state.lookTarget);
+    renderer.render(scene, camera);
+  }
+
+  // Public API
+  const api = {
+    init,
+    get ok() { return ok; },
+    setParallax(x, y) { state.parallax.x = x; state.parallax.y = y; },
+    setView(name) {
+      if (!ok) return;
+      const views = {
+        intro:   { cam: [0, 0.2, 7.2],  look: [0, 0.4, 0], light: 0,   bloom: 0 },
+        greet:   { cam: [0.8, 0.6, 5.6], look: [0, 0.5, 0], light: 0,   bloom: 0.35 },
+        video:   { cam: [0, 0.8, 8.5],  look: [0, 0.4, 0], light: 0.1, bloom: 0.35 },
+        message: { cam: [-1.2, 0.2, 6.0], look: [0, 0.5, 0], light: 1,  bloom: 0.35 },
+        bouquet: { cam: [0, 1.2, 4.2],  look: [0, 0.75, 0], light: 1,  bloom: 0 },
+        end:     { cam: [0, 0.6, 6.8],  look: [0, 0.5, 0], light: 1,   bloom: 1 },
+      };
+      const v = views[name]; if (!v) return;
+      state.camTarget.set(...v.cam); state.lookTarget.set(...v.look);
+      state.lightTarget = v.light; state.bloomTarget = v.bloom;
+    },
+    bloom() { if (ok) state.bloomTarget = 1; },
+  };
+  return api;
+})();
+
+/* ============================================================
+   Dự phòng CSS khi không có WebGL
+   ============================================================ */
+function enableCssPetals() {
+  const box = $('#cssPetals'); box.classList.add('is-on');
+  if (reducedMotion) return;
+  for (let i = 0; i < 24; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDuration = (9 + Math.random() * 9) + 's';
+    s.style.animationDelay = (-Math.random() * 18) + 's';
+    s.style.transform = `scale(${0.7 + Math.random() * 0.8})`;
+    box.appendChild(s);
+  }
+}
+
+/* ============================================================
+   Điều hướng giữa các màn
+   ============================================================ */
+const stage = $('#stage');
+const screens = Array.from(document.querySelectorAll('.screen'));
+const viewNames = ['intro', 'greet', 'video', 'message', 'bouquet', 'end'];
+const nav = $('#nav'), dots = $('#dots'), prevBtn = $('#prevBtn'), nextBtn = $('#nextBtn'), stepLabel = $('#stepLabel');
+let current = 0, opened = false, transitioning = false;
+
+screens.forEach((_, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', CONFIG.STEP_LABELS[i]);
+  b.innerHTML = '<i></i>';
+  b.addEventListener('click', () => goTo(i));
+  dots.appendChild(b);
+});
+
+function goTo(index) {
+  if (index < 0 || index >= screens.length || index === current && opened) return;
+  if (!opened && index > 0) opened = true;
+  transitioning = true; setTimeout(() => (transitioning = false), 900);
+  screens[current].classList.remove('is-active');
+  current = index;
+  const sc = screens[current];
+  sc.classList.add('is-active');
+  sc.scrollTop = 0;
+  stage.classList.toggle('is-light', sc.dataset.mode === 'light');
+  Scene3D.setView(viewNames[current]);
+  dots.querySelectorAll('button').forEach((b, i) => { if (i === current) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === screens.length - 1;
+  stepLabel.textContent = `${current + 1} / ${screens.length} · ${CONFIG.STEP_LABELS[current]}`;
+  nav.classList.toggle('is-visible', opened);
+  soundBtn.classList.toggle('is-visible', opened);
+  if (current !== 2) pauseVideo();
+  try { history.replaceState(null, '', '#' + (current === 0 ? '' : 'man' + (current + 1))); } catch (e) {}
+}
+
+$('#openBtn').addEventListener('click', () => { Sound.init(); Sound.chime(); goTo(1); });
+prevBtn.addEventListener('click', () => goTo(current - 1));
+nextBtn.addEventListener('click', () => goTo(current + 1));
+$('#replayBtn').addEventListener('click', () => { opened = false; nav.classList.remove('is-visible'); soundBtn.classList.remove('is-visible'); $('#s5').classList.remove('is-bloomed'); goTo(0); opened = false; });
+
+document.addEventListener('keydown', (e) => {
+  if (!opened) { if (e.key === 'Enter' || e.key === ' ') { if (document.activeElement !== $('#openBtn')) { e.preventDefault(); $('#openBtn').click(); } } return; }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+});
+
+// Swipe (touch) và cuộn chuột, bỏ qua khi đang tương tác với video hoặc nội dung cuộn
+let touchStartY = null, touchStartX = null, wheelLock = 0;
+stage.addEventListener('touchstart', (e) => { if (e.target.closest('video, .video-frame')) return; touchStartY = e.touches[0].clientY; touchStartX = e.touches[0].clientX; }, { passive: true });
+stage.addEventListener('touchend', (e) => {
+  if (touchStartY === null || !opened) { touchStartY = null; return; }
+  const dy = e.changedTouches[0].clientY - touchStartY, dx = e.changedTouches[0].clientX - touchStartX;
+  touchStartY = null;
+  const sc = screens[current];
+  const canScroll = sc.scrollHeight > sc.clientHeight + 4;
+  if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) {
+    if (dy < 0 && (!canScroll || sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4)) goTo(current + 1);
+    else if (dy > 0 && (!canScroll || sc.scrollTop <= 2)) goTo(current - 1);
+  }
+}, { passive: true });
+stage.addEventListener('wheel', (e) => {
+  if (!opened || transitioning) return;
+  const now = Date.now(); if (now - wheelLock < 1100) return;
+  const sc = screens[current];
+  const canScroll = sc.scrollHeight > sc.clientHeight + 4;
+  if (Math.abs(e.deltaY) < 24) return;
+  if (e.deltaY > 0 && (!canScroll || sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4)) { wheelLock = now; goTo(current + 1); }
+  else if (e.deltaY < 0 && (!canScroll || sc.scrollTop <= 2)) { wheelLock = now; goTo(current - 1); }
+}, { passive: true });
+
+// Parallax
+stage.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'touch') return;
+  Scene3D.setParallax((e.clientX / window.innerWidth - 0.5) * 2, (0.5 - e.clientY / window.innerHeight) * 2);
+});
+stage.addEventListener('touchmove', (e) => {
+  const t = e.touches[0];
+  Scene3D.setParallax((t.clientX / window.innerWidth - 0.5) * 1.2, (0.5 - t.clientY / window.innerHeight) * 1.2);
+}, { passive: true });
+
+/* ============================================================
+   Màn 5: chạm để hoa nở
+   ============================================================ */
+$('#bloomZone').addEventListener('click', () => {
+  const s5 = $('#s5');
+  if (s5.classList.contains('is-bloomed')) return;
+  s5.classList.add('is-bloomed');
+  Scene3D.bloom();
+  Sound.init(); Sound.chime([659.25, 783.99, 987.77, 1318.5, 1567.98], 0.11);
+});
+
+/* ============================================================
+   Video
+   ============================================================ */
+const video = $('#cardVideo'), videoSrc = $('#cardVideoSrc'), videoCover = $('#videoCover'), videoError = $('#videoError');
+videoSrc.src = CONFIG.VIDEO_URL;
+if (CONFIG.VIDEO_POSTER) video.poster = CONFIG.VIDEO_POSTER;
+video.load();
+video.addEventListener('loadedmetadata', () => {
+  if (video.videoWidth && video.videoHeight) video.parentElement.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+});
+function showVideoError() { videoCover.hidden = true; videoError.hidden = false; }
+video.addEventListener('error', showVideoError);
+videoSrc.addEventListener('error', showVideoError);
+videoCover.addEventListener('click', () => {
+  video.play().then(() => { videoCover.hidden = true; }).catch(() => { videoCover.hidden = true; });
+});
+video.addEventListener('play', () => { videoCover.hidden = true; });
+video.addEventListener('ended', () => { videoCover.hidden = false; });
+function pauseVideo() { if (!video.paused) { video.pause(); } }
+
+/* ============================================================
+   Khởi động
+   ============================================================ */
+(function boot() {
+  const started = Scene3D.init();   // tự giảm chất lượng theo QUALITY; không có WebGL → dự phòng CSS
+  if (!started) enableCssPetals();
+  // Deep link #manN
+  const m = /man(\d)/.exec(location.hash || '');
+  if (m) { const idx = Math.min(Math.max(parseInt(m[1], 10) - 1, 0), screens.length - 1); if (idx > 0) { opened = true; } goTo(idx); }
+  else { goTo(0); nav.classList.remove('is-visible'); }
+  Scene3D.setView(viewNames[current]);
+  // Reveal page after fonts / first frame
+  const done = () => $('#veil').classList.add('is-gone');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(done, 350)); else setTimeout(done, 600);
+  setTimeout(done, 2500);
+})();
+</script>
