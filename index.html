@@ -1,15 +1,25 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Thiệp 20/10 Diên Hồng</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Thương gửi những đóa hoa xinh đẹp – Thiệp chúc mừng Ngày Phụ nữ Việt Nam 20/10, chương trình ngày 19.10.2026.">
 <meta property="og:title" content="Thương gửi những đóa hoa xinh đẹp – 20/10">
 <meta property="og:description" content="Thiệp chúc mừng Ngày Phụ nữ Việt Nam 20/10 dành tặng toàn thể chị em. Chương trình ngày 19.10.2026.">
-<meta property="og:image" content="og-image.png">
-<meta property="og:url" content="">
+<meta property="og:image" content="https://dhpit001-bot.github.io/thiep-20-10/og-image.png">
+<meta property="og:url" content="https://dhpit001-bot.github.io/thiep-20-10/">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#2a0d16">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500&display=swap">
+<style>
+  html { color-scheme: dark; }
+  body { margin: 0; font: 14px system-ui, sans-serif; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
 <style>
   /* Layout: one fixed stage. A WebGL scene sits behind six stacked screens that cross-fade;
      the world shifts from a dark wine opening to a warm cream close as the screens advance. */
@@ -145,7 +155,7 @@
 
   /* Video */
   .video-frame {
-    position: relative; width: min(100%, 440px); border-radius: 22px; padding: 6px;
+    position: relative; width: min(100%, 330px, calc((100vh - 230px) * 9 / 16)); border-radius: 22px; padding: 6px;
     background: linear-gradient(140deg, var(--gold-light), #9c7a2a 40%, var(--gold-light) 70%, #8e6d20);
     box-shadow: 0 28px 60px rgba(0,0,0,.35);
   }
@@ -153,7 +163,7 @@
   .video-frame::before {
     content: ""; position: absolute; inset: 2px; border-radius: 19px; border: 1px solid rgba(255,250,243,.55); pointer-events: none; z-index: 2;
   }
-  .video-box { position: relative; width: 100%; max-width: 100%; height: 0; padding-bottom: 100%; border-radius: 17px; overflow: hidden; background: #000; }
+  .video-box { position: relative; width: 100%; max-width: 100%; height: 0; padding-bottom: 177.78%; border-radius: 17px; overflow: hidden; background: #000; }
   .video-box video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
   .video-cover {
     position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
@@ -277,6 +287,8 @@
     #glow, #wash { transition-duration: .4s; }
   }
 </style>
+</head>
+<body>
 
 <div id="stage">
   <canvas id="scene" aria-hidden="true"></canvas>
@@ -331,7 +343,7 @@
       <h2>Một lời chúc gửi riêng chị em</h2>
       <div class="video-frame">
         <div class="video-box">
-          <video id="cardVideo" playsinline webkit-playsinline preload="metadata" controls controlslist="nodownload" poster="video/poster.jpg"></video>
+          <video id="cardVideo" playsinline webkit-playsinline preload="metadata" controls controlslist="nodownload" poster="video/poster.jpg?v=7"></video>
           <button class="video-cover" id="videoCover" type="button" aria-label="Phát video chúc mừng">
             <span class="play-ring"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
             <span>Nhấn để xem video</span>
@@ -390,11 +402,11 @@
 const CONFIG = {
   // Các bản video (tương đối với trang hoặc địa chỉ HTTPS công khai); giữ cả mp4 và webm để mọi trình xem đều phát được.
   VIDEO_SOURCES: [
-    { src: 'video/thiep-2010.mp4?v=3',  type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' },  // iPhone, Safari, Chrome, Zalo di động
-    { src: 'video/thiep-2010.webm?v=3', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
+    { src: 'video/thiep-2010.mp4?v=7',  type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' },  // iPhone, Safari, Chrome, Zalo di động
+    { src: 'video/thiep-2010.webm?v=7', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
   ],
-  VIDEO_POSTER: 'video/poster.jpg',
-  BUILD: 6,
+  VIDEO_POSTER: 'video/poster.jpg?v=7',
+  BUILD: 7,
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
 };
@@ -872,3 +884,5 @@ loadNext();
   setTimeout(done, 2500);
 })();
 </script>
+</body>
+</html>
