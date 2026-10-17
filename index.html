@@ -394,6 +394,7 @@ const CONFIG = {
     { src: 'video/thiep-2010.webm?v=3', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
   ],
   VIDEO_POSTER: 'video/poster.jpg',
+  BUILD: 6,
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
 };
@@ -736,6 +737,7 @@ function goTo(index) {
   prevBtn.disabled = current === 0;
   nextBtn.disabled = current === screens.length - 1;
   stepLabel.textContent = `${current + 1} / ${screens.length} · ${CONFIG.STEP_LABELS[current]}`;
+  stepLabel.title = 'Bản ' + CONFIG.BUILD;
   nav.classList.toggle('is-visible', opened);
   soundBtn.classList.toggle('is-visible', opened);
   if (current !== 2) pauseVideo();
@@ -834,7 +836,9 @@ function finalError(extra) {
   const why = { 1: 'bị hủy', 2: 'lỗi mạng', 3: 'lỗi giải mã', 4: 'định dạng không hỗ trợ' }[code] || 'không rõ';
   const tag = videoError.querySelector('small') || videoError.firstElementChild.appendChild(document.createElement('small'));
   tag.style.cssText = 'display:block;opacity:.6;margin-top:8px;font-size:.75rem';
-  tag.textContent = 'Mã lỗi ' + code + ' (' + why + (extra ? ', ' + extra : '') + ')';
+  let cp = '';
+  try { cp = CONFIG.VIDEO_SOURCES.map((x) => (x.type.split(';')[0].replace('video/', '')) + ':' + (video.canPlayType(x.type) || 'no')).join(' '); } catch (e) {}
+  tag.textContent = 'Bản ' + CONFIG.BUILD + ' · Mã lỗi ' + code + ' (' + why + (extra ? ', ' + extra : '') + ') · ' + cp + ' · ' + navigator.userAgent.slice(0, 90);
 }
 video.addEventListener('error', () => { if (queue.length) loadNext(); else showVideoError(); });
 video.addEventListener('loadedmetadata', () => {
