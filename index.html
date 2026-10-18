@@ -310,7 +310,7 @@
 
   <div id="veil" aria-hidden="true"><div class="mono">Đang mở thiệp…</div></div>
 
-  <button id="soundBtn" type="button" aria-pressed="false" aria-label="Bật hoặc tắt âm thanh hiệu ứng" title="Âm thanh hiệu ứng">
+  <button id="soundBtn" type="button" aria-pressed="false" aria-label="Bật hoặc tắt nhạc nền" title="Nhạc nền">
     <svg class="off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M19 5 5 19"/></svg>
     <svg class="on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>
   </button>
@@ -425,7 +425,9 @@ const CONFIG = {
     { src: 'video/thiep-2010.webm?v=7', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
   ],
   VIDEO_POSTER: 'video/poster.jpg?v=7',
-  BUILD: 8,
+  BUILD: 9,
+  MUSIC_URL: 'audio/nhac-nen.mp3',   // nhạc nền, bật khi nhấn 'Mở thiệp', lặp liên tục
+  MUSIC_VOLUME: 0.55,
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
 };
@@ -443,8 +445,30 @@ const QUALITY = reducedMotion ? 'low' : (isSmallScreen || isLowPower) ? 'medium'
    Âm thanh hiệu ứng (WebAudio, chỉ khi người dùng bật)
    ============================================================ */
 const Sound = {
-  ctx: null, enabled: false,
-  init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) this.ctx = new AC(); } if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  ctx: null, enabled: false, music: null, ducked: false,
+  init() {
+    if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) this.ctx = new AC(); }
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    if (!this.music && CONFIG.MUSIC_URL) {
+      this.music = new Audio(CONFIG.MUSIC_URL); this.music.loop = true; this.music.preload = 'auto'; this.music.volume = 0;
+      this.music.addEventListener('error', () => { this.music = null; });
+    }
+  },
+  fadeTo(target, ms) {
+    const m = this.music; if (!m) return;
+    const start = m.volume, t0 = performance.now();
+    const step = (t) => { const k = Math.min(1, (t - t0) / ms); m.volume = start + (target - start) * k; if (k < 1) requestAnimationFrame(step); else if (target === 0) m.pause(); };
+    requestAnimationFrame(step);
+  },
+  startMusic() {
+    this.init(); const m = this.music; if (!m) return;
+    m.volume = 0;
+    const p = m.play();
+    if (p && p.catch) p.then(() => { this.enabled = true; this.fadeTo(this.ducked ? 0.12 : CONFIG.MUSIC_VOLUME, 1800); syncSoundBtn(); }).catch(() => { this.enabled = false; syncSoundBtn(); });
+    else { this.enabled = true; this.fadeTo(CONFIG.MUSIC_VOLUME, 1800); syncSoundBtn(); }
+  },
+  stopMusic() { this.enabled = false; this.fadeTo(0, 600); syncSoundBtn(); },
+  duck(on) { this.ducked = on; if (this.enabled && this.music && !this.music.paused) this.fadeTo(on ? 0.12 : CONFIG.MUSIC_VOLUME, 500); },
   chime(notes = [523.25, 659.25, 783.99, 1046.5], spread = 0.14) {
     if (!this.enabled || !this.ctx) return;
     const t0 = this.ctx.currentTime;
@@ -452,7 +476,7 @@ const Sound = {
       const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
       o.type = 'sine'; o.frequency.value = f;
       g.gain.setValueAtTime(0, t0 + i * spread);
-      g.gain.linearRampToValueAtTime(0.08, t0 + i * spread + 0.02);
+      g.gain.linearRampToValueAtTime(0.05, t0 + i * spread + 0.02);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + i * spread + 1.6);
       o.connect(g).connect(this.ctx.destination);
       o.start(t0 + i * spread); o.stop(t0 + i * spread + 1.7);
@@ -460,12 +484,9 @@ const Sound = {
   }
 };
 const soundBtn = $('#soundBtn');
-soundBtn.addEventListener('click', () => {
-  Sound.init();
-  Sound.enabled = !Sound.enabled;
-  soundBtn.setAttribute('aria-pressed', String(Sound.enabled));
-  if (Sound.enabled) Sound.chime([783.99, 1046.5], 0.12);
-});
+function syncSoundBtn() { soundBtn.setAttribute('aria-pressed', String(Sound.enabled)); }
+soundBtn.addEventListener('click', () => { if (Sound.enabled) Sound.stopMusic(); else Sound.startMusic(); });
+document.addEventListener('visibilitychange', () => { if (Sound.music && Sound.enabled) { if (document.hidden) Sound.music.pause(); else Sound.music.play().catch(() => {}); } });
 
 /* ============================================================
    Cảnh 3D – Three.js (bó hoa hồng, cánh hoa rơi, hạt sáng)
@@ -775,7 +796,7 @@ function goTo(index) {
   try { history.replaceState(null, '', '#' + (current === 0 ? '' : 'man' + (current + 1))); } catch (e) {}
 }
 
-$('#openBtn').addEventListener('click', () => { Sound.init(); Sound.chime(); goTo(1); });
+$('#openBtn').addEventListener('click', () => { Sound.startMusic(); goTo(1); });
 prevBtn.addEventListener('click', () => goTo(current - 1));
 nextBtn.addEventListener('click', () => goTo(current + 1));
 $('#replayBtn').addEventListener('click', () => { opened = false; nav.classList.remove('is-visible'); soundBtn.classList.remove('is-visible'); $('#s5').classList.remove('is-bloomed'); goTo(0); opened = false; });
@@ -881,8 +902,9 @@ videoCover.addEventListener('click', () => {
   if (p && p.catch) p.then(() => { videoCover.hidden = true; }).catch(() => { if (video.error) showVideoError(); else videoCover.hidden = true; });
   else videoCover.hidden = true;
 });
-video.addEventListener('play', () => { videoCover.hidden = true; });
-video.addEventListener('ended', () => { videoCover.hidden = false; });
+video.addEventListener('play', () => { videoCover.hidden = true; Sound.duck(true); });
+video.addEventListener('pause', () => { Sound.duck(false); });
+video.addEventListener('ended', () => { videoCover.hidden = false; Sound.duck(false); });
 function pauseVideo() { if (!video.paused) { video.pause(); } }
 loadNext();
 
