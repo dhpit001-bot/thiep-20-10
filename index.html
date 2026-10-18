@@ -205,13 +205,25 @@
   #s5.is-bloomed .bouquet-hint { opacity: 0; transform: translateY(8px); pointer-events: none; }
   .bloom-message { opacity: 0; transform: translateY(16px); filter: blur(6px); transition: opacity 1.2s ease .3s, transform 1.2s ease .3s, filter 1.2s ease .3s; display: flex; flex-direction: column; gap: 14px; align-items: center; }
   #s5.is-bloomed .bloom-message { opacity: 1; transform: none; filter: none; }
-  #s5 .spacer { height: min(34vh, 300px); }
+  .poem { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px; border-radius: 18px;
+    background: rgba(251,244,236,.72); border: 1px solid rgba(201,162,74,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 18px 40px rgba(58,28,38,.12); max-width: 30em; }
+  .poem p { margin: 0; font-family: var(--font-display); font-size: clamp(1.05rem, 4.1vw, 1.32rem); line-height: 1.45; color: var(--ink); }
+  .poem p { opacity: 0; transform: translateY(8px); transition: opacity .7s ease, transform .7s ease; }
+  #s5.is-bloomed .poem p { opacity: 1; transform: none; }
+  #s5.is-bloomed .poem p:nth-child(1) { transition-delay: .5s } #s5.is-bloomed .poem p:nth-child(2) { transition-delay: .9s }
+  #s5.is-bloomed .poem p:nth-child(3) { transition-delay: 1.3s } #s5.is-bloomed .poem p:nth-child(4) { transition-delay: 1.7s }
+  #s5.is-bloomed .poem p:nth-child(5) { transition-delay: 2.1s } #s5.is-bloomed .poem p:nth-child(6) { transition-delay: 2.5s }
+  #s5.is-bloomed .poem p:nth-child(7) { transition-delay: 2.9s }
+  @media (prefers-reduced-motion: reduce) { #s5.is-bloomed .poem p { transition-delay: 0s !important; } }
+  #s5 .spacer { height: min(12vh, 120px); }
   #s5 .inner { justify-content: flex-end; }
   .tap-zone { position: absolute; inset: 0; z-index: 1; background: transparent; border: 0; padding: 0; cursor: pointer; }
   .tap-zone:focus-visible { outline: 2px dashed var(--gold-light); outline-offset: -12px; }
   #s5 .inner { position: relative; z-index: 2; pointer-events: none; }
   #s5 .inner > * { pointer-events: auto; }
-  #s5 .bouquet-hint, #s5 .spacer { pointer-events: none; }
+  #s5 .bouquet-hint, #s5 .spacer, #s5 .bloom-message { pointer-events: none; }
+  #s5.is-bloomed .bloom-message { pointer-events: auto; }
 
   /* Screen 6 */
   .signature { font-family: var(--font-display); font-style: italic; font-size: clamp(1.3rem, 5vw, 1.8rem); color: var(--rose); margin: 0; }
@@ -276,7 +288,7 @@
   @media (min-width: 720px) {
     .screen { padding-block: calc(80px + env(safe-area-inset-top, 0px)) calc(100px + env(safe-area-inset-bottom, 0px)); }
     .screen > .inner { max-width: 640px; gap: 22px; }
-    #s5 .spacer { height: min(38vh, 340px); }
+    #s5 .spacer { height: min(26vh, 240px); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -362,9 +374,16 @@
       <div class="spacer" aria-hidden="true"></div>
       <span class="bouquet-hint"><span class="dot"></span>Chạm vào bó hoa</span>
       <div class="bloom-message">
-        <p class="eyebrow">Khoảnh khắc đặc biệt</p>
-        <h2>Mỗi người là một đóa hoa, theo cách riêng của mình.</h2>
-        <p class="body">Xin được trân trọng cảm ơn và gửi tới chị em một bó hoa nhỏ, thay cho lời cảm ơn lớn của cả tập thể.</p>
+        <p class="eyebrow">Thư mời đặc biệt 20/10</p>
+        <div class="poem">
+          <p>Tháng Mười gõ cửa thật mau,<br>Anh em họp kín bàn nhau tặng quà.</p>
+          <p>Chị em rạng rỡ như hoa,<br>Bao nhiêu vất vả cho qua tháng ngày.</p>
+          <p>Hôm nay quà đã trong tay,<br>Mời người đẹp đến, vui say một chiều.</p>
+          <p>Anh em chuẩn bị bao điều,<br>Chỉ mong các chị thật nhiều niềm vui.</p>
+          <p>Đừng ai bận quá mà lui,<br>Đến đông đủ nhé, cho vui cả nhà.</p>
+          <p>Anh em đã sẵn hoa quà,<br>Chỉ chờ các chị bước ra nhận liền.</p>
+          <p>Xin mời các chị dịu hiền,<br>Đến chung vui nhé, kẻo phiền anh em!</p>
+        </div>
       </div>
     </div>
   </section>
@@ -406,7 +425,7 @@ const CONFIG = {
     { src: 'video/thiep-2010.webm?v=7', type: 'video/webm; codecs="vp9, opus"' },             // Chromium không có H.264 (Zalo PC, Electron)
   ],
   VIDEO_POSTER: 'video/poster.jpg?v=7',
-  BUILD: 7,
+  BUILD: 8,
   EVENT_DATE: '19.10.2026',
   STEP_LABELS: ['Mở thiệp', 'Lời chào', 'Video kỷ niệm', 'Khoảnh khắc', 'Lời kết'],
 };
